@@ -1,0 +1,30 @@
+title: 우아칼로리 - 음식 영양성분·칼로리 사전
+description: >-
+  전국 19,495개 음식·식품의 칼로리, 탄단지, 비타민 등 영양성분을 검색하세요.
+  식품의약품안전처 등 공공데이터 기반의 신뢰할 수 있는 영양정보입니다.
+url: "https://wooafood.wooahouse.com"
+baseurl: ""
+lang: ko
+timezone: Asia/Seoul
+author: WooaHouse
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - "*.py"
+  - "*.log"
+  - "*.txt"
+  - README.md
+  - .gitignore
+  - vendor/
+  - _rawdata/

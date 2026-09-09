@@ -1,0 +1,115 @@
+---
+layout: default
+title: 음식 영양성분·칼로리 사전
+description: 전국 19,495개 음식·식품의 칼로리, 탄단지, 비타민 등 영양성분을 검색하세요. 식품의약품안전처 등 공공데이터 기반의 신뢰할 수 있는 영양정보입니다.
+---
+
+<div class="hero">
+  <h1>🍚 음식 칼로리·영양성분 사전</h1>
+  <p>먹은 음식의 칼로리와 영양성분을 바로 확인하세요</p>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" class="search-input"
+           placeholder="예) 김치찌개, 초코파이, 아메리카노..."
+           autocomplete="off" aria-label="음식 검색">
+    <button class="search-btn" onclick="doSearch()">🔍 검색</button>
+  </div>
+</div>
+
+<div class="page-with-sidebar">
+<div>
+<div id="search-results"></div>
+
+<div class="top-ad-bar">
+  {% include ad.html %}
+</div>
+
+<div class="section" style="padding-bottom:0;">
+  <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;padding:20px 24px;">
+    <p style="color:#78350F;line-height:1.8;font-size:.92rem;">
+      🍽️ <strong>내가 먹은 음식, 칼로리가 궁금하다면?</strong> 전국 음식·식품
+      <strong id="totalCount">-</strong>개의 칼로리와 탄단지, 비타민·무기질 정보를 확인하세요.
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🍽️ 분류별 음식 찾기</h2>
+  <div class="region-grid">
+    <a href="/category/빵 및 과자류/" class="region-btn"><span class="region-icon">🍞</span>빵·과자<span class="region-count"></span></a>
+    <a href="/category/음료 및 차류/" class="region-btn"><span class="region-icon">🥤</span>음료·차<span class="region-count"></span></a>
+    <a href="/category/국 및 탕류/" class="region-btn"><span class="region-icon">🍲</span>국·탕<span class="region-count"></span></a>
+    <a href="/category/밥류/" class="region-btn"><span class="region-icon">🍚</span>밥류<span class="region-count"></span></a>
+    <a href="/category/면 및 만두류/" class="region-btn"><span class="region-icon">🍜</span>면·만두<span class="region-count"></span></a>
+    <a href="/category/찌개 및 전골류/" class="region-btn"><span class="region-icon">🍲</span>찌개·전골<span class="region-count"></span></a>
+    <a href="/category/볶음류/" class="region-btn"><span class="region-icon">🍳</span>볶음류<span class="region-count"></span></a>
+    <a href="/category/튀김류/" class="region-btn"><span class="region-icon">🍤</span>튀김류<span class="region-count"></span></a>
+    <a href="/category/구이류/" class="region-btn"><span class="region-icon">🍖</span>구이류<span class="region-count"></span></a>
+    <a href="/category/생채·무침류/" class="region-btn"><span class="region-icon">🥗</span>생채·무침<span class="region-count"></span></a>
+    <a href="/category/유제품류 및 빙과류/" class="region-btn"><span class="region-icon">🍦</span>유제품·빙과<span class="region-count"></span></a>
+    <a href="/category/김치류/" class="region-btn"><span class="region-icon">🥬</span>김치류<span class="region-count"></span></a>
+  </div>
+  <p style="margin-top:8px;font-size:.85rem;"><a href="/category/">전체 분류 보기 →</a></p>
+</div>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script>
+let fuseIndex = null;
+let fuse = null;
+
+async function loadIndex() {
+  if (fuseIndex) return;
+  const resp = await fetch('/search_index.json');
+  fuseIndex = await resp.json();
+  document.getElementById('totalCount').textContent = fuseIndex.length.toLocaleString();
+  fuse = new Fuse(fuseIndex, {
+    keys: ['n', 'cat', 'company'],
+    threshold: 0.3,
+    minMatchCharLength: 1,
+  });
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { document.getElementById('search-results').innerHTML = ''; return; }
+  loadIndex().then(() => {
+    const results = fuse.search(q).slice(0, 30);
+    const el = document.getElementById('search-results');
+    if (results.length === 0) {
+      el.innerHTML = '<p style="text-align:center;padding:20px;color:#6B7280;">검색 결과가 없습니다.</p>';
+      return;
+    }
+    el.innerHTML = `<div style="max-width:960px;margin:0 auto;padding:0 20px;">
+      <p style="padding:8px 0;font-size:.9rem;color:#6B7280;">"${q}" 검색 결과 ${results.length}개</p>
+      ${results.map(r => searchResultItem(r.item)).join('')}
+    </div>`;
+    el.scrollIntoView({ behavior: 'smooth' });
+  });
+}
+
+function searchResultItem(f) {
+  return `<div class="search-result-item">
+    <a href="/food/${f.slug}/">
+      <div>
+        <div class="search-result-name">${f.n}</div>
+        <div class="search-result-loc">${f.kcal ? f.kcal + ' kcal' : ''} · ${f.cat || ''}</div>
+      </div>
+    </a>
+  </div>`;
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+loadIndex();
+
+const urlQ = new URLSearchParams(location.search).get('q');
+if (urlQ) {
+  document.getElementById('searchInput').value = urlQ;
+  loadIndex().then(doSearch);
+}
+</script>

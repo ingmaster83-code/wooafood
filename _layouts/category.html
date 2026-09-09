@@ -1,0 +1,66 @@
+---
+layout: default
+---
+
+<div class="page-with-sidebar">
+<div class="region-page">
+
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="/">홈</a>
+    <span>›</span>
+    <span>{{ page.cat_name }}</span>
+  </nav>
+
+  <div class="region-page-header">
+    <h1>🍽️ {{ page.title_h1 }}</h1>
+    <p>{{ page.subtitle }}</p>
+  </div>
+
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <p id="itemCount" style="font-size:.87rem;color:#6B7280;margin-bottom:16px;"></p>
+
+  <div class="camp-grid" id="itemGrid">
+    <p style="color:#6B7280;">로딩 중...</p>
+  </div>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
+
+<script>
+const CAT_NAME = {{ page.cat_name | jsonify }};
+let allItems = [];
+
+(async () => {
+  const resp = await fetch('/search_index.json');
+  const all  = await resp.json();
+  allItems = all.filter(f => f.cat === CAT_NAME);
+  document.getElementById('itemCount').textContent = `총 ${allItems.length}개`;
+  renderItems(allItems);
+})();
+
+function itemCard(f) {
+  return `<a class="camp-card" href="/food/${f.slug}/">
+    <div class="camp-card-body">
+      <div class="camp-card-name">${f.n}</div>
+      <div class="camp-card-loc">${f.kcal ? f.kcal + ' kcal' : ''}${f.company ? ' · ' + f.company : ''}</div>
+    </div>
+  </a>`;
+}
+
+function renderItems(items) {
+  const grid = document.getElementById('itemGrid');
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="color:#6B7280;grid-column:1/-1;">해당 분류의 음식이 없습니다.</p>';
+    return;
+  }
+  const MAX = 300;
+  grid.innerHTML = items.slice(0, MAX).map(itemCard).join('');
+  if (items.length > MAX) {
+    grid.innerHTML += `<p style="grid-column:1/-1;color:#6B7280;font-size:.85rem;padding:12px 0;">${items.length - MAX}개가 더 있습니다. 검색으로 좁혀보세요.</p>`;
+  }
+}
+</script>

@@ -1,0 +1,140 @@
+---
+layout: default
+---
+
+<div class="page-with-sidebar">
+<div class="camp-page">
+
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="/">홈</a>
+    <span>›</span>
+    <a href="/category/{{ page.category | uri_escape }}/">{{ page.category }}</a>
+    <span>›</span>
+    <span>{{ page.foodName }}</span>
+  </nav>
+
+  <div class="camp-header">
+    <div class="camp-tags">
+      <span class="tag tag-type">{{ page.category }}</span>
+      {% if page.origin and page.origin != "" %}<span class="tag tag-env">{{ page.origin }}</span>{% endif %}
+    </div>
+    <h1 class="camp-title">{{ page.foodName }}</h1>
+    {% if page.company and page.company != "" %}
+    <div class="camp-info-row">
+      <span class="camp-info-icon">🏢</span>
+      <span>{{ page.company }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 칼로리 하이라이트 -->
+  <div class="trust-box" style="text-align:center;padding:28px 20px;">
+    <p style="font-size:.85rem;color:#6B7280;margin-bottom:6px;">{{ page.baseQty | default: "100g" }} 기준</p>
+    <p style="font-size:2.2rem;font-weight:800;color:#EA580C;">{{ page.energy | default: "-" }}<span style="font-size:1.1rem;font-weight:600;"> kcal</span></p>
+  </div>
+
+  <!-- 3대 영양소 -->
+  <div class="camp-section">
+    <h2>🍽️ 3대 영양소</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;">
+      {% if page.carb and page.carb != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;width:130px;">탄수화물</td><td>{{ page.carb }}g{% if page.sugar and page.sugar != "" %} (당류 {{ page.sugar }}g){% endif %}</td></tr>
+      {% endif %}
+      {% if page.protein and page.protein != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">단백질</td><td>{{ page.protein }}g</td></tr>
+      {% endif %}
+      {% if page.fat and page.fat != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">지방</td><td>{{ page.fat }}g{% if page.satFat and page.satFat != "" %} (포화지방 {{ page.satFat }}g){% endif %}{% if page.transFat and page.transFat != "" %} (트랜스지방 {{ page.transFat }}g){% endif %}</td></tr>
+      {% endif %}
+      {% if page.fiber and page.fiber != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">식이섬유</td><td>{{ page.fiber }}g</td></tr>
+      {% endif %}
+      {% if page.cholesterol and page.cholesterol != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">콜레스테롤</td><td>{{ page.cholesterol }}mg</td></tr>
+      {% endif %}
+      {% if page.sodium and page.sodium != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">나트륨</td><td>{{ page.sodium }}mg</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <!-- 무기질·비타민 -->
+  <div class="camp-section">
+    <h2>💊 무기질·비타민</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;">
+      {% if page.calcium and page.calcium != "" %}<tr><td style="padding:8px 0;color:#6B7280;width:130px;">칼슘</td><td>{{ page.calcium }}mg</td></tr>{% endif %}
+      {% if page.iron and page.iron != "" %}<tr><td style="padding:8px 0;color:#6B7280;">철</td><td>{{ page.iron }}mg</td></tr>{% endif %}
+      {% if page.phosphorus and page.phosphorus != "" %}<tr><td style="padding:8px 0;color:#6B7280;">인</td><td>{{ page.phosphorus }}mg</td></tr>{% endif %}
+      {% if page.potassium and page.potassium != "" %}<tr><td style="padding:8px 0;color:#6B7280;">칼륨</td><td>{{ page.potassium }}mg</td></tr>{% endif %}
+      {% if page.vitaminA and page.vitaminA != "" %}<tr><td style="padding:8px 0;color:#6B7280;">비타민A</td><td>{{ page.vitaminA }}μg RAE</td></tr>{% endif %}
+      {% if page.thiamin and page.thiamin != "" %}<tr><td style="padding:8px 0;color:#6B7280;">티아민(B1)</td><td>{{ page.thiamin }}mg</td></tr>{% endif %}
+      {% if page.riboflavin and page.riboflavin != "" %}<tr><td style="padding:8px 0;color:#6B7280;">리보플라빈(B2)</td><td>{{ page.riboflavin }}mg</td></tr>{% endif %}
+      {% if page.niacin and page.niacin != "" %}<tr><td style="padding:8px 0;color:#6B7280;">니아신</td><td>{{ page.niacin }}mg</td></tr>{% endif %}
+      {% if page.vitaminC and page.vitaminC != "" %}<tr><td style="padding:8px 0;color:#6B7280;">비타민C</td><td>{{ page.vitaminC }}mg</td></tr>{% endif %}
+      {% if page.vitaminD and page.vitaminD != "" %}<tr><td style="padding:8px 0;color:#6B7280;">비타민D</td><td>{{ page.vitaminD }}μg</td></tr>{% endif %}
+      {% if page.water and page.water != "" %}<tr><td style="padding:8px 0;color:#6B7280;">수분</td><td>{{ page.water }}g</td></tr>{% endif %}
+    </table>
+    <p style="font-size:.82rem;color:#92400E;margin-top:14px;">
+      {% if page.source and page.source != "" %}출처: {{ page.source }}. {% endif %}공공데이터 기준으로, 실제 조리·제품에 따라 영양성분이 달라질 수 있습니다.
+    </p>
+  </div>
+
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 같은 분류 다른 음식 -->
+  <div class="region-camps">
+    <h2>🍽️ {{ page.category }} 다른 음식</h2>
+    <div id="catGrid" class="camp-grid"></div>
+    <p style="margin-top:16px;">
+      <a href="/category/{{ page.category | uri_escape }}/">{{ page.category }} 전체 보기 →</a>
+    </p>
+  </div>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NutritionInformation",
+    "calories": "{{ page.energy | escape }} kcal",
+    "carbohydrateContent": "{{ page.carb | escape }} g",
+    "proteinContent": "{{ page.protein | escape }} g",
+    "fatContent": "{{ page.fat | escape }} g"
+  }
+  </script>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
+
+<script>
+(async () => {
+  const currentSlug = {{ page.slug | jsonify }};
+  const currentCat = {{ page.category | jsonify }};
+
+  try {
+    const resp = await fetch('/search_index.json');
+    const all = await resp.json();
+    const related = all
+      .filter(f => f.cat === currentCat && f.slug !== currentSlug)
+      .slice(0, 6);
+    if (related.length > 0) {
+      document.getElementById('catGrid').innerHTML = related.map(itemCard).join('');
+    }
+  } catch(e) {}
+
+  function itemCard(f) {
+    return `<a class="camp-card" href="/food/${f.slug}/">
+      <div class="camp-card-body">
+        <div class="camp-card-name">${f.n}</div>
+        <div class="camp-card-loc">${f.kcal ? f.kcal + ' kcal' : ''}</div>
+      </div>
+    </a>`;
+  }
+})();
+</script>
